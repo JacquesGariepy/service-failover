@@ -5,3 +5,4 @@ python-dotenv
 cachetools
 prometheus_client
 aioping
+python-dotenv
