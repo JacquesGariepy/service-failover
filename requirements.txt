@@ -1,0 +1,7 @@
+requests
+aiohttp
+asyncio-throttle
+python-dotenv
+cachetools
+prometheus_client
+aioping
