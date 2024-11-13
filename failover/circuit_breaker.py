@@ -1,6 +1,8 @@
 import time
 import logging
 from typing import Dict
+
+from failover.metrics import MetricsCollector
 from .service import Service  # Corrected import
 
 logger = logging.getLogger(__name__)
