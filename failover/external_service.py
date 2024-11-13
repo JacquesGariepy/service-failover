@@ -29,7 +29,7 @@ class ExternalAPIService(Service):
         if cached_response:
             return cached_response
 
-        async with (await self.connection_pool.acquire()):  # P39e5
+        async with self.connection_pool:  # P39e5
             with self.metrics.latency_histogram.labels(
                 service=self.__class__.__name__,
                 endpoint=endpoint
