@@ -42,6 +42,10 @@ async def main():
         ExternalAPIService(
             base_url=config.get('SERVICES', 'EXTERNAL_SERVICE3_BASE_URL', fallback=os.environ.get('EXTERNAL_SERVICE3_BASE_URL', 'https://external3.example.com')),
             api_key=API_KEY
+        ),
+        ExternalAPIService(
+            base_url=config.get('SERVICES', 'EXTERNAL_SERVICE4_BASE_URL', fallback=os.environ.get('EXTERNAL_SERVICE4_BASE_URL', 'https://external3.example.com')),
+            api_key=API_KEY
         )
     ]
 
@@ -55,7 +59,7 @@ async def main():
             print(f"Service {service.__class__.__name__} is unhealthy")
 
     try:
-        result = await failover_manager.execute("/endpoint", method='GET', params={'param1': 'value1'})
+        result = await failover_manager.execute("/products/search", method='GET', params={'q': 'phone'})
         print(result)
     except Exception as e:
         print(f"All services failed with error: {e}")
