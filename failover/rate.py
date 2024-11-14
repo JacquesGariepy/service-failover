@@ -1,13 +1,17 @@
 from asyncio_throttle import Throttler
 import logging
+import configparser
 
-DEFAULT_RATE_LIMIT = 5
-DEFAULT_RATE_LIMIT_PERIOD = 1
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 logger = logging.getLogger(__name__)
 
 class RateLimiter:
-    def __init__(self, rate: int = DEFAULT_RATE_LIMIT, period: float = DEFAULT_RATE_LIMIT_PERIOD):
+    def __init__(self, rate: int = None, period: float = None):
+        rate = rate or config.getint('DEFAULT', 'RATE_LIMIT', fallback=5)
+        period = period or config.getfloat('DEFAULT', 'RATE_LIMIT_PERIOD', fallback=1.0)
         logger.debug(f"Initializing RateLimiter with rate={rate}, period={period}")
         self.throttler = Throttler(rate, period)
 
