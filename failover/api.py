@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 import logging
+import configparser
 from typing import Dict, Optional, List
 from datetime import datetime
 from .service import Service, HealthStatus
@@ -9,9 +10,13 @@ from .metrics import MetricsCollector
 from .connection_pool import ConnectionPool
 from .cache import Cache
 
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 # Constants
-DEFAULT_TIMEOUT = 5  # seconds
-DEFAULT_RETRY_AFTER = 60  # seconds
+DEFAULT_TIMEOUT = config.getint('DEFAULT', 'DEFAULT_TIMEOUT', fallback=5)  # seconds
+DEFAULT_RETRY_AFTER = config.getint('DEFAULT', 'DEFAULT_RETRY_AFTER', fallback=60)  # seconds
 HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 
 # Configure logging
@@ -104,7 +109,7 @@ class APIService(Service):
             logger.error(f"Response error for {endpoint}: {e.status} {e.message}")
             raise
 
-    def get_health_history(self) -> List[Dict]:
+    def get_health_history(self) -> List<Dict]:
         """Return the health check history in a formatted way"""
         logger.debug("Getting health history")
         return [status.to_dict() for status in self.health_history[-10:]]  # Keep last 10 checks

@@ -1,7 +1,12 @@
 import asyncio
 import logging
+import configparser
 
-DEFAULT_MAX_SIZE = 10
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+DEFAULT_MAX_SIZE = config.getint('DEFAULT', 'DEFAULT_MAX_SIZE', fallback=10)
 
 logger = logging.getLogger(__name__)
 

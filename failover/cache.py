@@ -1,7 +1,12 @@
 import logging
 from cachetools import TTLCache
+import configparser
 
-DEFAULT_TTL = 300
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+DEFAULT_TTL = config.getint('DEFAULT', 'DEFAULT_TTL', fallback=300)
 
 logger = logging.getLogger(__name__)
 

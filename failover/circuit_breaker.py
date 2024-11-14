@@ -1,5 +1,6 @@
 import time
 import logging
+import configparser
 from typing import Dict
 
 from failover.metrics import MetricsCollector
@@ -7,8 +8,12 @@ from .service import Service  # Corrected import
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_FAILURE_THRESHOLD = 3
-DEFAULT_RECOVERY_TIME = 60
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+DEFAULT_FAILURE_THRESHOLD = config.getint('DEFAULT', 'DEFAULT_FAILURE_THRESHOLD', fallback=3)
+DEFAULT_RECOVERY_TIME = config.getint('DEFAULT', 'DEFAULT_RECOVERY_TIME', fallback=60)
 
 class CircuitBreaker:
     def __init__(self, failure_threshold: int = DEFAULT_FAILURE_THRESHOLD, recovery_time: int = DEFAULT_RECOVERY_TIME):
