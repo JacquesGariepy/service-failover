@@ -30,7 +30,7 @@ To use the Service Failover System, follow these steps:
 
 1. **Configuration**: Configure the system by setting the appropriate parameters in the `config.ini` file or environment variables. This includes API keys, base URLs, retry policy parameters, circuit breaker parameters, and rate limiter settings.
 
-2. **Service Registration**: Register the services that you want to manage with the failover system. This can be done by creating instances of `ExternalAPIService` and registering them with the `FailoverManager`.
+2. **Service Registration**: Register the services that you want to manage with the failover system. This can be done by creating instances of `APIService` and registering them with the `FailoverManager`.
 
 3. **Health Checks**: Perform health checks on the registered services to ensure they are functioning correctly. The failover system will automatically handle unhealthy services by preventing further requests to them.
 

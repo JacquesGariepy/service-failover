@@ -80,3 +80,12 @@ class CircuitBreaker:
             self.state[service] = 'OPEN'
             logger.warning(f"Circuit breaker opened for {service}.")
         logger.warning(f"Service {service} recorded failure, count={self.failure_counts[service]}")
+
+    def get_state(self, service: Service) -> str:
+        return self.state.get(service, 'CLOSED')
+
+    def get_failure_count(self, service: Service) -> int:
+        return self.failure_counts.get(service, 0)
+
+    def get_last_failure_time(self, service: Service) -> float:
+        return self.last_failure_time.get(service, 0)
