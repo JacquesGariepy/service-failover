@@ -6,10 +6,11 @@ from typing import Optional, Tuple, Dict, Any, Protocol
 from urllib.parse import urlparse
 from datetime import datetime
 import logging
+import configparser
 
-# Constants
-DEFAULT_DELAY_THRESHOLD = 1.0
-DEFAULT_TIMEOUT = 5.0  # seconds
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,8 @@ class Service(ABC):
         self.cache: CacheProtocol = self._create_cache()
         self.connection_pool: ConnectionPoolProtocol = self._create_connection_pool()
         self._last_health_status: Optional[HealthStatus] = None
+        self.delay_threshold = config.getfloat('DEFAULT', 'DELAY_THRESHOLD', fallback=1.0)
+        self.timeout = config.getfloat('DEFAULT', 'TIMEOUT', fallback=5.0)
         logger.info(f"Service initialized with base_url={base_url}")
 
     def _create_metrics_collector(self) -> MetricsCollectorProtocol:
@@ -87,11 +90,12 @@ class Service(ABC):
     async def request(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
         pass
 
-    async def _check_dns(self, hostname: str, timeout: float = DEFAULT_TIMEOUT) -> Tuple[bool, Optional[str], float]:
+    async def _check_dns(self, hostname: str, timeout: float = None) -> Tuple[bool, Optional[str], float]:
         """
         Check if DNS resolution works for the given hostname.
         Returns (success, error_message, duration)
         """
+        timeout = timeout or self.timeout
         logger.debug(f"Checking DNS for hostname={hostname}")
         start_time = asyncio.get_event_loop().time()
         try:
@@ -108,17 +112,18 @@ class Service(ABC):
             duration = asyncio.get_event_loop().time() - start_time
             return False, f"Unexpected error during DNS resolution: {str(e)}", duration
 
-    async def _check_ping(self, hostname: str, timeout: float = DEFAULT_TIMEOUT) -> Tuple[bool, Optional[str], float]:
+    async def _check_ping(self, hostname: str, timeout: float = None) -> Tuple[bool, Optional[str], float]:
         """
         Check if host responds to ping within acceptable delay.
         Returns (success, error_message, duration)
         """
+        timeout = timeout or self.timeout
         logger.debug(f"Checking ping for hostname={hostname}")
         start_time = asyncio.get_event_loop().time()
         try:
             delay = await asyncio.wait_for(aioping.ping(hostname), timeout=timeout)
             duration = asyncio.get_event_loop().time() - start_time
-            if delay >= DEFAULT_DELAY_THRESHOLD:
+            if delay >= self.delay_threshold:
                 return False, f"High latency detected: {delay:.2f}s", duration
             return True, None, duration
         except asyncio.TimeoutError:
@@ -131,7 +136,7 @@ class Service(ABC):
             duration = asyncio.get_event_loop().time() - start_time
             return False, f"Unexpected error during ping: {str(e)}", duration
 
-    async def health_check(self, timeout: float = DEFAULT_TIMEOUT) -> HealthStatus:
+    async def health_check(self, timeout: float = None) -> HealthStatus:
         """
         Comprehensive health check that verifies DNS resolution and network connectivity.
         Returns HealthStatus object containing detailed check results.
@@ -139,6 +144,7 @@ class Service(ABC):
         Args:
             timeout: Maximum time in seconds to wait for health check
         """
+        timeout = timeout or self.timeout
         logger.info(f"Performing health check for service with base_url={self.base_url}")
         health_status = HealthStatus()
         
