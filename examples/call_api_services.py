@@ -98,6 +98,7 @@ async def main():
                                               params={'q': 'phone'})
         logger.info("Request successful!")
         logger.info(f"Response: {result[:200]}..." if len(result) > 200 else f"Response: {result}")
+        print(f"Response: {result[:200]}..." if len(result) > 200 else f"Response: {result}")
     except Exception as e:
         logger.error("All services failed to process the request")
         logger.error(f"Final error: {str(e)}")
