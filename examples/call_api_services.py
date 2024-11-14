@@ -51,27 +51,22 @@ async def main():
     services = [
         APIService(
             base_url=config.get('SERVICES', 'SERVICE1_BASE_URL', 
-                              fallback=os.environ.get('SERVICE1_BASE_URL', 'https://service1.example.com')),
+                              fallback=os.environ.get('SERVICE1_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE2_BASE_URL', 
-                              fallback=os.environ.get('SERVICE2_BASE_URL', 'https://service2.example.com')),
+                              fallback=os.environ.get('SERVICE2_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE3_BASE_URL', 
-                              fallback=os.environ.get('SERVICE3_BASE_URL', 'https://service3.example.com')),
+                              fallback=os.environ.get('SERVICE3_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE4_BASE_URL', 
-                              fallback=os.environ.get('SERVICE4_BASE_URL', 'https://service4.example.com')),
-            api_key=API_KEY
-        ),
-        APIService(
-            base_url=config.get('SERVICES', 'SERVICE5_BASE_URL', 
-                              fallback=os.environ.get('SERVICE5_BASE_URL', 'https://service5.example.com')),
+                              fallback=os.environ.get('SERVICE4_BASE_URL', 'https://dummyjson.com/products/search?q=phone')),
             api_key=API_KEY
         )
     ]
@@ -98,9 +93,9 @@ async def main():
 
     logger.info("Attempting to execute request...")
     try:
-        result = await failover_manager.execute("/endpoint1", 
+        result = await failover_manager.execute("/products/search", 
                                               method='GET', 
-                                              params={'param1': 'value1'})
+                                              params={'q': 'phone'})
         logger.info("Request successful!")
         logger.info(f"Response: {result[:200]}..." if len(result) > 200 else f"Response: {result}")
     except Exception as e:
