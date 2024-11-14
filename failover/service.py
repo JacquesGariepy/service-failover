@@ -5,10 +5,13 @@ import asyncio
 from typing import Optional, Tuple, Dict, Any, Protocol
 from urllib.parse import urlparse
 from datetime import datetime
+import logging
 
 # Constants
 DEFAULT_DELAY_THRESHOLD = 1.0
 DEFAULT_TIMEOUT = 5.0  # seconds
+
+logger = logging.getLogger(__name__)
 
 class MetricsCollectorProtocol(Protocol):
     def record_health_check(self, is_healthy: bool) -> None: ...
@@ -66,6 +69,7 @@ class Service(ABC):
         self.cache: CacheProtocol = self._create_cache()
         self.connection_pool: ConnectionPoolProtocol = self._create_connection_pool()
         self._last_health_status: Optional[HealthStatus] = None
+        logger.info(f"Service initialized with base_url={base_url}")
 
     def _create_metrics_collector(self) -> MetricsCollectorProtocol:
         from .metrics import MetricsCollector
@@ -88,6 +92,7 @@ class Service(ABC):
         Check if DNS resolution works for the given hostname.
         Returns (success, error_message, duration)
         """
+        logger.debug(f"Checking DNS for hostname={hostname}")
         start_time = asyncio.get_event_loop().time()
         try:
             await asyncio.get_event_loop().getaddrinfo(hostname, None)
@@ -108,6 +113,7 @@ class Service(ABC):
         Check if host responds to ping within acceptable delay.
         Returns (success, error_message, duration)
         """
+        logger.debug(f"Checking ping for hostname={hostname}")
         start_time = asyncio.get_event_loop().time()
         try:
             delay = await asyncio.wait_for(aioping.ping(hostname), timeout=timeout)
@@ -133,6 +139,7 @@ class Service(ABC):
         Args:
             timeout: Maximum time in seconds to wait for health check
         """
+        logger.info(f"Performing health check for service with base_url={self.base_url}")
         health_status = HealthStatus()
         
         try:

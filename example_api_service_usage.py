@@ -1,7 +1,7 @@
 import asyncio
 import configparser
 import logging
-from failover.external_service import ExternalAPIService
+from failover.api import APIService
 from failover.policies import RetryPolicy
 from failover.circuit_breaker import CircuitBreaker
 from failover.manager import FailoverManager
@@ -34,42 +34,41 @@ async def main():
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler("service_failover.log"),
+            logging.StreamHandler()
+        ]
     )
 
-    print("\n=== Service Failover System Initialization ===")
-    print(f"Configuration:")
-    print(f"  Max Attempts: {MAX_ATTEMPTS}")
-    print(f"  Base Delay: {BASE_DELAY}s")
-    print(f"  Jitter: {JITTER}s")
-    print(f"  Failure Threshold: {FAILURE_THRESHOLD}")
-    print(f"  Recovery Time: {RECOVERY_TIME}s")
-    print("=" * 50 + "\n")
+    logger = logging.getLogger(__name__)
+    logger.info("Service Failover System Initialization")
+    logger.info(f"Configuration: Max Attempts: {MAX_ATTEMPTS}, Base Delay: {BASE_DELAY}s, Jitter: {JITTER}s, Failure Threshold: {FAILURE_THRESHOLD}, Recovery Time: {RECOVERY_TIME}s")
 
     services = [
-        ExternalAPIService(
+        APIService(
             base_url=config.get('SERVICES', 'EXTERNAL_SERVICE1_BASE_URL', 
                               fallback=os.environ.get('EXTERNAL_SERVICE1_BASE_URL', 'https://external1.example.com')),
             api_key=API_KEY
         ),
-        ExternalAPIService(
+        APIService(
             base_url=config.get('SERVICES', 'EXTERNAL_SERVICE2_BASE_URL', 
                               fallback=os.environ.get('EXTERNAL_SERVICE2_BASE_URL', 'https://external2.example.com')),
             api_key=API_KEY
         ),
-        ExternalAPIService(
+        APIService(
             base_url=config.get('SERVICES', 'EXTERNAL_SERVICE3_BASE_URL', 
                               fallback=os.environ.get('EXTERNAL_SERVICE3_BASE_URL', 'https://external3.example.com')),
             api_key=API_KEY
         ),
-        ExternalAPIService(
+        APIService(
             base_url=config.get('SERVICES', 'EXTERNAL_SERVICE4_BASE_URL', 
                               fallback=os.environ.get('EXTERNAL_SERVICE4_BASE_URL', 'https://external4.example.com')),
             api_key=API_KEY
         )
     ]
 
-    print("Performing initial health checks...")
+    logger.info("Performing initial health checks...")
     healthy_services = []
     unhealthy_services = []
 
@@ -82,27 +81,23 @@ async def main():
         else:
             unhealthy_services.append(service)
 
-    print("\n=== Health Check Summary ===")
-    print(f"Total Services: {len(services)}")
-    print(f"Healthy Services: {len(healthy_services)}")
-    print(f"Unhealthy Services: {len(unhealthy_services)}")
-    print("=" * 50 + "\n")
+    logger.info(f"Health Check Summary: Total Services: {len(services)}, Healthy Services: {len(healthy_services)}, Unhealthy Services: {len(unhealthy_services)}")
 
     if unhealthy_services:
-        print("Warning: The following services are unhealthy:")
+        logger.warning("The following services are unhealthy:")
         for service in unhealthy_services:
-            print(f"  - {service}")
+            logger.warning(f"  - {service}")
 
-    print("\nAttempting to execute request...")
+    logger.info("Attempting to execute request...")
     try:
         result = await failover_manager.execute("/products/search", 
                                               method='GET', 
                                               params={'q': 'phone'})
-        print("\nRequest successful!")
-        print(f"Response: {result[:200]}..." if len(result) > 200 else f"Response: {result}")
+        logger.info("Request successful!")
+        logger.info(f"Response: {result[:200]}..." if len(result) > 200 else f"Response: {result}")
     except Exception as e:
-        print(f"\nError: All services failed to process the request")
-        print(f"Final error: {str(e)}")
+        logger.error("All services failed to process the request")
+        logger.error(f"Final error: {str(e)}")
 
 if __name__ == "__main__":
     asyncio.run(main())

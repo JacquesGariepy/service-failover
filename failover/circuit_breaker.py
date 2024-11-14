@@ -18,9 +18,11 @@ class CircuitBreaker:
         self.last_failure_time: Dict[Service, float] = {}
         self.state: Dict[Service, str] = {}
         self.metrics = MetricsCollector()
+        logger.info(f"CircuitBreaker initialized with failure_threshold={failure_threshold}, recovery_time={recovery_time}")
 
     async def call(self, service: Service, *args, **kwargs):
         state = self.state.get(service, 'CLOSED')
+        logger.debug(f"Calling service {service} with state {state}")
         if state == 'OPEN':
             time_since_failure = time.time() - self.last_failure_time.get(service, 0)
             if time_since_failure < self.recovery_time:
@@ -32,6 +34,7 @@ class CircuitBreaker:
             result = await service.call(*args, **kwargs)
             self.state[service] = 'CLOSED'
             self.failure_counts[service] = 0
+            logger.info(f"Service {service} call successful")
             return result
         except Exception as e:
             self.failure_counts[service] += 1
@@ -41,12 +44,14 @@ class CircuitBreaker:
                 endpoint="unknown",
                 status="failure"
             ).inc()
+            logger.error(f"Service {service} call failed: {str(e)}")
             if self.failure_counts[service] >= self.failure_threshold:
                 self.state[service] = 'OPEN'
             raise e
 
     def allow_request(self, service: Service) -> bool:
         state = self.state.get(service, 'CLOSED')
+        logger.debug(f"Allow request for service {service} with state {state}")
         if state == 'OPEN':
             time_since_failure = time.time() - self.last_failure_time.get(service, 0)
             if time_since_failure > self.recovery_time:
@@ -60,6 +65,7 @@ class CircuitBreaker:
     def record_success(self, service: Service):
         self.failure_counts[service] = 0
         self.state[service] = 'CLOSED'
+        logger.info(f"Service {service} recorded success")
 
     def record_failure(self, service: Service):
         count = self.failure_counts.get(service, 0) + 1
@@ -73,3 +79,4 @@ class CircuitBreaker:
         if count >= self.failure_threshold:
             self.state[service] = 'OPEN'
             logger.warning(f"Circuit breaker opened for {service}.")
+        logger.warning(f"Service {service} recorded failure, count={self.failure_counts[service]}")

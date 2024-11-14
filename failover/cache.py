@@ -1,14 +1,20 @@
-
+import logging
 from cachetools import TTLCache
 
 DEFAULT_TTL = 300
 
+logger = logging.getLogger(__name__)
+
 class Cache:
     def __init__(self, ttl=DEFAULT_TTL):
         self.cache = TTLCache(maxsize=100, ttl=ttl)
+        logger.info(f"Cache initialized with TTL={ttl}")
 
     def get(self, key):
-        return self.cache.get(key)
+        value = self.cache.get(key)
+        logger.debug(f"Cache get: key={key}, value={value}")
+        return value
 
     def set(self, key, value):
         self.cache.setdefault(key, value)
+        logger.debug(f"Cache set: key={key}, value={value}")

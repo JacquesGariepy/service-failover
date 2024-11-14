@@ -93,6 +93,7 @@ class MetricsCollector:
             self._metrics['health_status'].labels(
                 service=service_name
             ).set(1 if is_healthy else 0)
+            logger.info(f"Recorded health check for {service_name}: {status}")
         except Exception as e:
             logger.error(f"Failed to record health check metrics: {str(e)}")
 
@@ -113,6 +114,7 @@ class MetricsCollector:
             self._metrics['dns_latency'].labels(
                 service=service_name
             ).observe(duration)
+            logger.info(f"Recorded DNS latency for {service_name}: {duration}s")
         except Exception as e:
             logger.error(f"Failed to record DNS latency metrics: {str(e)}")
 
@@ -122,6 +124,7 @@ class MetricsCollector:
             self._metrics['ping_latency'].labels(
                 service=service_name
             ).observe(duration)
+            logger.info(f"Recorded ping latency for {service_name}: {duration}s")
         except Exception as e:
             logger.error(f"Failed to record ping latency metrics: {str(e)}")
 
@@ -133,5 +136,6 @@ class MetricsCollector:
                 endpoint=endpoint,
                 status=status
             ).inc()
+            logger.info(f"Recorded request to {endpoint} for {service_name} with status {status}")
         except Exception as e:
             logger.error(f"Failed to record request metrics: {str(e)}")

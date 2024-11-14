@@ -17,14 +17,16 @@ HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 # Configure logging
 logger = logging.getLogger(__name__)
 
-class ExternalAPIService(Service):
+class APIService(Service):
     def __init__(self, api_key: str, base_url: str):
         super().__init__(base_url)
         self.api_key = api_key
         self.rate_limiter = RateLimiter()
         self.health_history: List[HealthStatus] = []  # Keep track of health check history
-        
+        logger.info(f"APIService initialized with base_url={base_url}")
+
     async def request(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
+        logger.debug(f"Requesting {method} {endpoint} with params={params} and data={data}")
         if method not in HTTP_METHODS:
             raise ValueError(f"Unsupported HTTP method: {method}")
 
@@ -37,6 +39,7 @@ class ExternalAPIService(Service):
         cache_key = f"{method}:{endpoint}:{str(params)}:{str(data)}"
         cached_response = self.cache.get(cache_key)
         if cached_response:
+            logger.debug(f"Cache hit for key={cache_key}")
             return cached_response
 
         async with self.connection_pool:
@@ -62,14 +65,17 @@ class ExternalAPIService(Service):
                         
                     except asyncio.TimeoutError:
                         self.metrics.record_error("timeout", f"Request to {endpoint} timed out")
+                        logger.error(f"Request to {endpoint} timed out")
                         raise ConnectionError("Request timed out")
                     except aiohttp.ClientError as e:
                         self.metrics.record_error("client_error", str(e))
+                        logger.error(f"Client error during request to {endpoint}: {e}")
                         raise ConnectionError(f"Client error: {e}")
 
     async def _make_request(self, session: aiohttp.ClientSession, method: str, 
                           url: str, headers: Dict, params: Optional[Dict], 
                           data: Optional[Dict]) -> aiohttp.ClientResponse:
+        logger.debug(f"Making {method} request to {url} with headers={headers} and params={params}")
         if method == 'GET':
             return await session.get(url, headers=headers, params=params)
         elif method == 'POST':
@@ -82,6 +88,7 @@ class ExternalAPIService(Service):
             raise ValueError(f"Unsupported HTTP method: {method}")
 
     async def _handle_response(self, response: aiohttp.ClientResponse, endpoint: str) -> str:
+        logger.debug(f"Handling response for {endpoint} with status {response.status}")
         if response.status == 429:
             retry_after = int(response.headers.get('Retry-After', DEFAULT_RETRY_AFTER))
             logger.warning(f"Rate limited. Retrying after {retry_after} seconds.")
@@ -94,16 +101,19 @@ class ExternalAPIService(Service):
             return await response.text()
         except aiohttp.ClientResponseError as e:
             self.metrics.record_error("response_error", f"{e.status}: {e.message}")
+            logger.error(f"Response error for {endpoint}: {e.status} {e.message}")
             raise
 
     def get_health_history(self) -> List[Dict]:
         """Return the health check history in a formatted way"""
+        logger.debug("Getting health history")
         return [status.to_dict() for status in self.health_history[-10:]]  # Keep last 10 checks
 
     async def verify_service_health(self, display_results: bool = True) -> bool:
         """
         Enhanced version that maintains health history and provides detailed logging
         """
+        logger.info(f"Verifying health for service {self.base_url}")
         health_status = await self.health_check()
         self.health_history.append(health_status)
         
