@@ -84,7 +84,7 @@ class Service(ABC):
         return ConnectionPool()
 
     @abstractmethod
-    async def request(self) -> str:
+    async def request(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
         pass
 
     async def _check_dns(self, hostname: str, timeout: float = DEFAULT_TIMEOUT) -> Tuple[bool, Optional[str], float]:
