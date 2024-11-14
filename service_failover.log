@@ -814,3 +814,88 @@
 2024-11-14 14:31:42,257 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
 2024-11-14 14:31:46,584 - failover.policies - ERROR - Max retry attempts reached.
 2024-11-14 14:31:46,585 - asyncio - ERROR - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:31:42 - Status: Unhealthy failed with error: Max retry attempts reached..
+2024-11-14 14:44:26,836 - __main__ - INFO - Service Failover System Initialization
+2024-11-14 14:44:26,836 - __main__ - INFO - Configuration: Max Attempts: 3, Base Delay: 1.0s, Jitter: 0.5s, Failure Threshold: 3, Recovery Time: 60s
+2024-11-14 14:44:26,836 - failover.cache - INFO - Cache initialized with TTL=300
+2024-11-14 14:44:26,836 - failover.connection_pool - INFO - ConnectionPool initialized with max_size=10
+2024-11-14 14:44:26,836 - failover.service - INFO - Service initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,836 - failover.api - INFO - APIService initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,837 - failover.cache - INFO - Cache initialized with TTL=300
+2024-11-14 14:44:26,837 - failover.connection_pool - INFO - ConnectionPool initialized with max_size=10
+2024-11-14 14:44:26,837 - failover.service - INFO - Service initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,838 - failover.api - INFO - APIService initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,838 - failover.cache - INFO - Cache initialized with TTL=300
+2024-11-14 14:44:26,838 - failover.connection_pool - INFO - ConnectionPool initialized with max_size=10
+2024-11-14 14:44:26,838 - failover.service - INFO - Service initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,838 - failover.api - INFO - APIService initialized with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,838 - failover.cache - INFO - Cache initialized with TTL=300
+2024-11-14 14:44:26,838 - failover.connection_pool - INFO - ConnectionPool initialized with max_size=10
+2024-11-14 14:44:26,838 - failover.service - INFO - Service initialized with base_url=https://dummyjson.com
+2024-11-14 14:44:26,838 - failover.api - INFO - APIService initialized with base_url=https://dummyjson.com
+2024-11-14 14:44:26,838 - __main__ - INFO - Performing initial health checks...
+2024-11-14 14:44:26,838 - asyncio - INFO - Service ExternalAPIService(https://dummyjson_fail.com) - No health check performed yet registered
+2024-11-14 14:44:26,839 - failover.api - INFO - Verifying health for service https://dummyjson_fail.com
+2024-11-14 14:44:26,839 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,865 - failover.metrics - INFO - Recorded health check for APIService: unhealthy
+2024-11-14 14:44:26,865 - failover.metrics - INFO - Recorded DNS latency for APIService: 0.015999999945051968s
+2024-11-14 14:44:26,867 - asyncio - INFO - Service ExternalAPIService(https://dummyjson_fail.com) - No health check performed yet registered
+2024-11-14 14:44:26,867 - failover.api - INFO - Verifying health for service https://dummyjson_fail.com
+2024-11-14 14:44:26,867 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,868 - failover.metrics - INFO - Recorded health check for APIService: unhealthy
+2024-11-14 14:44:26,870 - asyncio - INFO - Service ExternalAPIService(https://dummyjson_fail.com) - No health check performed yet registered
+2024-11-14 14:44:26,870 - failover.api - INFO - Verifying health for service https://dummyjson_fail.com
+2024-11-14 14:44:26,871 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,872 - failover.metrics - INFO - Recorded health check for APIService: unhealthy
+2024-11-14 14:44:26,872 - asyncio - INFO - Service ExternalAPIService(https://dummyjson.com) - No health check performed yet registered
+2024-11-14 14:44:26,872 - failover.api - INFO - Verifying health for service https://dummyjson.com
+2024-11-14 14:44:26,872 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson.com
+2024-11-14 14:44:26,908 - failover.metrics - INFO - Recorded health check for APIService: healthy
+2024-11-14 14:44:26,908 - failover.metrics - INFO - Recorded DNS latency for APIService: 0.015999999945051968s
+2024-11-14 14:44:26,908 - failover.metrics - INFO - Recorded ping latency for APIService: 0.015000000013969839s
+2024-11-14 14:44:26,910 - __main__ - INFO - Health Check Summary: Total Services: 4, Healthy Services: 1, Unhealthy Services: 3
+2024-11-14 14:44:26,911 - __main__ - WARNING - The following services are unhealthy:
+2024-11-14 14:44:26,911 - __main__ - WARNING -   - ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:26 - Status: Unhealthy
+2024-11-14 14:44:26,911 - __main__ - WARNING -   - ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:26 - Status: Unhealthy
+2024-11-14 14:44:26,911 - __main__ - WARNING -   - ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:26 - Status: Unhealthy
+2024-11-14 14:44:26,911 - __main__ - INFO - Attempting to execute request...
+2024-11-14 14:44:26,911 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:26,911 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:26,911 - failover.policies - WARNING - Attempt 1 failed with error: Service is unhealthy: . Retrying in 1.26 seconds.
+2024-11-14 14:44:28,179 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:28,179 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:28,179 - failover.policies - WARNING - Attempt 2 failed with error: Service is unhealthy: . Retrying in 2.49 seconds.
+2024-11-14 14:44:30,671 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:30,672 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:30,672 - failover.policies - WARNING - Attempt 3 failed with error: Service is unhealthy: . Retrying in 4.14 seconds.
+2024-11-14 14:44:34,820 - failover.policies - ERROR - Max retry attempts reached.
+2024-11-14 14:44:34,820 - failover.circuit_breaker - WARNING - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:30 - Status: Unhealthy recorded failure, count=1
+2024-11-14 14:44:34,820 - asyncio - ERROR - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:30 - Status: Unhealthy failed with error: Max retry attempts reached..
+2024-11-14 14:44:34,820 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:34,820 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:34,820 - failover.policies - WARNING - Attempt 1 failed with error: Service is unhealthy: . Retrying in 1.32 seconds.
+2024-11-14 14:44:36,163 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:36,163 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:36,163 - failover.policies - WARNING - Attempt 2 failed with error: Service is unhealthy: . Retrying in 2.17 seconds.
+2024-11-14 14:44:38,351 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:38,351 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:38,351 - failover.policies - WARNING - Attempt 3 failed with error: Service is unhealthy: . Retrying in 4.28 seconds.
+2024-11-14 14:44:42,647 - failover.policies - ERROR - Max retry attempts reached.
+2024-11-14 14:44:42,647 - failover.circuit_breaker - WARNING - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:38 - Status: Unhealthy recorded failure, count=1
+2024-11-14 14:44:42,647 - asyncio - ERROR - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:38 - Status: Unhealthy failed with error: Max retry attempts reached..
+2024-11-14 14:44:42,647 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:42,647 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:42,647 - failover.policies - WARNING - Attempt 1 failed with error: Service is unhealthy: . Retrying in 1.46 seconds.
+2024-11-14 14:44:44,116 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:44,117 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:44,117 - failover.policies - WARNING - Attempt 2 failed with error: Service is unhealthy: . Retrying in 2.01 seconds.
+2024-11-14 14:44:46,132 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson_fail.com
+2024-11-14 14:44:46,132 - failover.api - ERROR - Service https://dummyjson_fail.com is unhealthy: 
+2024-11-14 14:44:46,132 - failover.policies - WARNING - Attempt 3 failed with error: Service is unhealthy: . Retrying in 4.05 seconds.
+2024-11-14 14:44:50,194 - failover.policies - ERROR - Max retry attempts reached.
+2024-11-14 14:44:50,194 - failover.circuit_breaker - WARNING - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:46 - Status: Unhealthy recorded failure, count=1
+2024-11-14 14:44:50,194 - asyncio - ERROR - Service ExternalAPIService(https://dummyjson_fail.com) - Last Check: 2024-11-14 14:44:46 - Status: Unhealthy failed with error: Max retry attempts reached..
+2024-11-14 14:44:50,194 - failover.service - INFO - Performing health check for service with base_url=https://dummyjson.com
+2024-11-14 14:44:50,311 - failover.circuit_breaker - INFO - Service ExternalAPIService(https://dummyjson.com) - Last Check: 2024-11-14 14:44:50 - Status: Healthy recorded success
+2024-11-14 14:44:50,311 - asyncio - INFO - Service ExternalAPIService(https://dummyjson.com) - Last Check: 2024-11-14 14:44:50 - Status: Healthy responded successfully.
+2024-11-14 14:44:50,312 - __main__ - INFO - Request successful!
+2024-11-14 14:44:50,312 - __main__ - INFO - Response: {"products":[{"id":101,"title":"Apple AirPods Max Silver","description":"The Apple AirPods Max in Silver are premium over-ear headphones with high-fidelity audio, adaptive EQ, and active noise cancell...

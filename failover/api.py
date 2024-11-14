@@ -109,7 +109,11 @@ class APIService(Service):
             logger.error(f"Response error for {endpoint}: {e.status} {e.message}")
             raise
 
-    def get_health_history(self) -> List<Dict]:
+    def get_health_history(self) -> List[Dict]:
+        # Function implementation goes here
+        pass
+
+    def get_health_history(self) -> List[Dict]:
         """Return the health check history in a formatted way"""
         logger.debug("Getting health history")
         return [status.to_dict() for status in self.health_history[-10:]]  # Keep last 10 checks
