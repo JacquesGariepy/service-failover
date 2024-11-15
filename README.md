@@ -148,7 +148,7 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for m
 
 ## Contact
 
-**Your Name** - [jacques.gariepy@outlook.com](mailto:jacques.gariepy@outlook.com)
+**Jacques Gariépy** - [jacques.gariepy@outlook.com](mailto:jacques.gariepy@outlook.com)
 
 Project Link: [https://github.com/JacquesGariepy/service_failover](https://github.com/JacquesGariepy/service_failover)
 
