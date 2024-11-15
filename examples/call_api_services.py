@@ -51,22 +51,22 @@ async def main():
     services = [
         APIService(
             base_url=config.get('SERVICES', 'SERVICE1_BASE_URL', 
-                              fallback=os.environ.get('SERVICE1_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
+                              fallback=os.environ.get('SERVICE1_BASE_URL', 'https://dummyjson_error.com')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE2_BASE_URL', 
-                              fallback=os.environ.get('SERVICE2_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
+                              fallback=os.environ.get('SERVICE2_BASE_URL', 'https://dummyjson_error.com')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE3_BASE_URL', 
-                              fallback=os.environ.get('SERVICE3_BASE_URL', 'https://dummyjson_error.com/products/search?q=phone')),
+                              fallback=os.environ.get('SERVICE3_BASE_URL', 'https://dummyjson_error.com')),
             api_key=API_KEY
         ),
         APIService(
             base_url=config.get('SERVICES', 'SERVICE4_BASE_URL', 
-                              fallback=os.environ.get('SERVICE4_BASE_URL', 'https://dummyjson.com/products/search?q=phone')),
+                              fallback=os.environ.get('SERVICE4_BASE_URL', 'https://dummyjson.com')),
             api_key=API_KEY
         )
     ]

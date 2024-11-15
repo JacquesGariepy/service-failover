@@ -73,11 +73,13 @@ After installation, configure the system:
 - **Set environment variables (optional):**
 
   - You can also define environment variables for sensitive settings.
-  - For example:
+  - For example in config.ini:
 
-    ```bash
-    export API_KEY=your_api_key
-    export BASE_URL=https://api.yourservice.com
+    ```plaintext
+    API_KEY=your_api_key
+    ...
+    SERVICE1_BASE_URL=https://api.yourservice.com
+    ...
     ```
 
 ## Getting Started
