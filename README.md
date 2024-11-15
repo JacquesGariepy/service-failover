@@ -1,8 +1,8 @@
 # Service Failover System
 
-## Overview
+## Introduction
 
-The Service Failover System is designed to enhance the resilience and reliability of your application by providing a robust mechanism for handling failures in external and internal services. It employs strategies such as retry policies, circuit breakers, and rate limiting to manage service failures effectively, ensuring that your application remains functional even when some services are unavailable or experiencing issues.
+The **Service Failover System** enhances the resilience of your application by providing robust mechanisms for handling failures in services. It ensures continuous operation through strategies like retry policies and circuit breakers.
 
 ## Purpose
 
@@ -12,29 +12,85 @@ The primary purpose of the Service Failover System is to minimize downtime and m
 
 The Service Failover System consists of several key components:
 
-1. **Retry Policy**: Defines the strategy for retrying failed requests, including parameters such as the maximum number of attempts, base delay, and jitter to introduce randomness in the retry intervals.
+1. **Retry Policy**: Handles transient failures by retrying failed requests with configurable parameters such as maximum attempts and delay intervals.
 
-2. **Circuit Breaker**: Monitors the health of services and prevents further requests to a service that is deemed unhealthy. It includes configurable parameters such as failure threshold and recovery time.
+2. **Circuit Breaker**: Monitors service health and prevents requests to unhealthy services, using parameters like failure thresholds and recovery times.
 
-3. **Rate Limiter**: Controls the rate at which requests are sent to a service, preventing overloading and ensuring compliance with rate limits.
+3. **Rate Limiter**: Manages the rate of outgoing requests to prevent service overloads and ensure compliance with rate limits.
 
-4. **Connection Pool**: Manages a pool of connections to services, allowing for efficient reuse of connections and reducing the overhead of establishing new connections.
+4. **Connection Pool**: Optimizes connection management by reusing connections, reducing the overhead of establishing new ones.
 
-5. **Cache**: Stores responses from services to reduce the number of requests and improve performance.
+5. **Cache**: Stores service responses to minimize requests and enhance performance.
 
-6. **Metrics Collector**: Collects and exposes metrics related to the performance and health of services, providing valuable insights for monitoring and troubleshooting.
+6. **Metrics Collector**: Gathers performance and health metrics for monitoring and troubleshooting purposes.
 
-## Usage
+## Prerequisites
+
+Before starting, ensure you have the following installed:
+
+- **Python 3.8** or later
+- **pip** (Python package manager)
+- Internet access to install dependencies
+
+## Installation
+
+Follow these steps to install the package:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/JacquesGariepy/service_failover.git
+   ```
+
+2. **Navigate to the project directory:**
+
+   ```bash
+   cd service_failover
+   ```
+
+3. **Create a virtual environment (recommended):**
+
+   ```bash
+   python -m venv env
+   source env/bin/activate  # On Windows: env\Scripts\activate
+   ```
+
+4. **Install the required dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Configuration
+
+After installation, configure the system:
+
+- **Edit `config.ini`:**
+
+  - Open the `config.ini` file located at the root of the project.
+  - Configure parameters like API keys, base URLs, retry policy settings, circuit breakers, and rate limiters.
+
+- **Set environment variables (optional):**
+
+  - You can also define environment variables for sensitive settings.
+  - For example:
+
+    ```bash
+    export API_KEY=your_api_key
+    export BASE_URL=https://api.yourservice.com
+    ```
+
+## Getting Started
 
 To use the Service Failover System, follow these steps:
 
-1. **Configuration**: Configure the system by setting the appropriate parameters in the `config.ini` file or environment variables. This includes API keys, base URLs, retry policy parameters, circuit breaker parameters, and rate limiter settings.
+1. **Configuration**: Set up parameters in the `config.ini` file or environment variables, including API keys, base URLs, and settings for retry policies, circuit breakers, and rate limiters.
 
-2. **Service Registration**: Register the services that you want to manage with the failover system. This can be done by creating instances of `APIService` and registering them with the `FailoverManager`.
+2. **Service Registration**: Create instances of `APIService` and register them with the `FailoverManager` to manage failover for your services.
 
-3. **Health Checks**: Perform health checks on the registered services to ensure they are functioning correctly. The failover system will automatically handle unhealthy services by preventing further requests to them.
+3. **Health Checks**: Implement health checks to ensure services are operational. The system will automatically handle any detected issues.
 
-4. **Executing Requests**: Use the `FailoverManager` to execute requests to the registered services. The failover system will handle retries, circuit breaking, and rate limiting as needed.
+4. **Execute Requests**: Use the `FailoverManager` to make requests. It will handle retries, circuit breaking, and rate limiting automatically.
 
 ## Potential Use Cases
 
@@ -48,6 +104,63 @@ The Service Failover System can be used in various scenarios, including:
 
 4. **Cloud Services**: When using cloud services, the failover system can handle transient failures and ensure that your application continues to operate smoothly.
 
+## Best Practices
+
+- **Monitor Metrics**: Regularly review metrics collected to identify and address potential issues early.
+- **Fine-Tune Parameters**: Adjust configuration settings based on application needs and observed service behaviors.
+- **Graceful Degradation**: Implement fallback mechanisms to maintain functionality when services are unavailable.
+
+## Troubleshooting
+
+- **Service Unavailability**: Check the circuit breaker status and service health indicators.
+- **Performance Issues**: Analyze the metrics to identify bottlenecks or configuration issues.
+- **Configuration Errors**: Ensure all settings in `config.ini` are correct and environment variables are properly set.
+
+## Usage Examples
+
+For a complete implementation example, please refer to the [call_api_services.py](examples/call_api_services.py) script located in the `examples` directory.
+
+## Advanced Configuration
+
+For more complex setups, you can customize various aspects of the Service Failover System:
+
+- **Custom Circuit Breaker**: Define custom failure thresholds and recovery times.
+- **Advanced Rate Limiting**: Implement dynamic rate limiting based on service load.
+- **Extended Metrics Collection**: Collect additional metrics for detailed analysis.
+
+Refer to the documentation for detailed instructions on advanced configuration options.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. **Fork** the project.
+2. **Create** a feature branch (`git checkout -b feature/NewFeature`).
+3. **Commit** your changes (`git commit -m 'Add a new feature'`).
+4. **Push** to the branch (`git push origin feature/NewFeature`).
+5. **Open** a Pull Request.
+
+## License
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for more information.
+
+## Contact
+
+**Your Name** - [jacques.gariepy@outlook.com](mailto:jacques.gariepy@outlook.com)
+
+Project Link: [https://github.com/JacquesGariepy/service_failover](https://github.com/JacquesGariepy/service_failover)
+
+## FAQ
+
+**Q: How do I handle service-specific errors?**
+A: Implement custom error handlers in the `APIService` class to manage service-specific errors.
+
+**Q: Can I use the failover system with multiple services?**
+A: Yes, you can register multiple `APIService` instances with the `FailoverManager` to manage failover for multiple services.
+
+**Q: How do I monitor the health of my services?**
+A: Use the built-in metrics collector to gather health metrics and integrate with monitoring tools for real-time insights.
+
 ## Conclusion
 
-The Service Failover System is a powerful tool for enhancing the resilience and reliability of your application. By employing strategies such as retry policies, circuit breakers, and rate limiting, it ensures that your application can handle service failures gracefully and maintain availability. With proper configuration and usage, the failover system can significantly improve the robustness of your application in various scenarios.
+By integrating the Service Failover System, your application gains robustness against service failures, maintaining availability through effective failover mechanisms.

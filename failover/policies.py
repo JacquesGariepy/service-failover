@@ -12,12 +12,26 @@ config.read('config.ini')
 
 class RetryPolicy:
     def __init__(self, max_attempts: int = None, base_delay: float = None, jitter: float = None):
+        """
+        Initialize the RetryPolicy with maximum attempts, base delay, and jitter.
+        
+        :param max_attempts: The maximum number of retry attempts.
+        :param base_delay: The base delay between retries.
+        :param jitter: The jitter to add randomness to the delay.
+        """
         self.max_attempts = max_attempts or config.getint('DEFAULT', 'MAX_ATTEMPTS', fallback=3)
         self.base_delay = base_delay or config.getfloat('DEFAULT', 'BASE_DELAY', fallback=1.0)
         self.jitter = jitter or config.getfloat('DEFAULT', 'JITTER', fallback=0.5)
         logger.info(f"RetryPolicy initialized with max_attempts={self.max_attempts}, base_delay={self.base_delay}, jitter={self.jitter}")
 
     async def execute_with_retry(self, func: Callable, *args, **kwargs):
+        """
+        Execute the given function with retry logic.
+        
+        :param func: The function to execute.
+        :return: The result of the function execution.
+        :raises Exception: If the maximum retry attempts are reached.
+        """
         for attempt in range(self.max_attempts):
             try:
                 logger.debug(f"Attempt {attempt + 1} for function {func.__name__}")

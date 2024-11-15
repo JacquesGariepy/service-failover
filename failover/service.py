@@ -63,8 +63,36 @@ class HealthStatus:
 ║ {f'Error: {self.error_message}' if self.error_message else ''}
 ╚═══════════════════════════════════════════════════════════╝"""
 
+# Abstract base class for services with health check capabilities
 class Service(ABC):
+    """
+    Abstract base class for services with health check capabilities.
+
+    This class provides the basic structure and functionality for a service that can perform health checks,
+    including DNS resolution and network connectivity checks. It also includes methods for making requests
+    to the service and managing metrics, cache, and connection pools.
+
+    Attributes:
+        base_url (str): The base URL of the service.
+        metrics (MetricsCollectorProtocol): An instance of MetricsCollector for recording metrics.
+        cache (CacheProtocol): An instance of Cache for caching data.
+        connection_pool (ConnectionPoolProtocol): An instance of ConnectionPool for managing connections.
+        _last_health_status (Optional[HealthStatus]): The last recorded health status of the service.
+        delay_threshold (float): The threshold for acceptable delay in ping responses.
+        timeout (float): The maximum time to wait for DNS resolution and ping responses.
+
+    Methods:
+        request(endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
+            Abstract method to perform a request to the service.
+        health_check(timeout: float = None) -> HealthStatus:
+            Perform a comprehensive health check that verifies DNS resolution and network connectivity.
+    """
     def __init__(self, base_url: str):
+        """
+        Initialize the Service with a base URL.
+        
+        :param base_url: The base URL of the service.
+        """
         self.base_url = base_url
         self.metrics: MetricsCollectorProtocol = self._create_metrics_collector()
         self.cache: CacheProtocol = self._create_cache()
@@ -75,25 +103,52 @@ class Service(ABC):
         logger.info(f"Service initialized with base_url={base_url}")
 
     def _create_metrics_collector(self) -> MetricsCollectorProtocol:
+        """
+        Create and return a MetricsCollector instance.
+        
+        :return: An instance of MetricsCollector.
+        """
         from .metrics import MetricsCollector
         return MetricsCollector()
 
     def _create_cache(self) -> CacheProtocol:
+        """
+        Create and return a Cache instance.
+        
+        :return: An instance of Cache.
+        """
         from .cache import Cache
         return Cache()
 
     def _create_connection_pool(self) -> ConnectionPoolProtocol:
+        """
+        Create and return a ConnectionPool instance.
+        
+        :return: An instance of ConnectionPool.
+        """
         from .connection_pool import ConnectionPool
         return ConnectionPool()
 
     @abstractmethod
     async def request(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
+        """
+        Abstract method to perform a request to the service.
+        
+        :param endpoint: The API endpoint to request.
+        :param method: The HTTP method to use (GET, POST, PUT, DELETE). Default is 'GET'.
+        :param params: The query parameters for the request. Default is None.
+        :param data: The data to send in the request body. Default is None.
+        :return: The response text from the service.
+        """
         pass
 
     async def _check_dns(self, hostname: str, timeout: float = None) -> Tuple[bool, Optional[str], float]:
         """
         Check if DNS resolution works for the given hostname.
-        Returns (success, error_message, duration)
+        
+        :param hostname: The hostname to resolve.
+        :param timeout: The maximum time to wait for DNS resolution. Default is None.
+        :return: A tuple containing success status, error message, and duration.
         """
         timeout = timeout or self.timeout
         logger.debug(f"Checking DNS for hostname={hostname}")
@@ -115,7 +170,10 @@ class Service(ABC):
     async def _check_ping(self, hostname: str, timeout: float = None) -> Tuple[bool, Optional[str], float]:
         """
         Check if host responds to ping within acceptable delay.
-        Returns (success, error_message, duration)
+        
+        :param hostname: The hostname to ping.
+        :param timeout: The maximum time to wait for ping response. Default is None.
+        :return: A tuple containing success status, error message, and duration.
         """
         timeout = timeout or self.timeout
         logger.debug(f"Checking ping for hostname={hostname}")
@@ -139,10 +197,9 @@ class Service(ABC):
     async def health_check(self, timeout: float = None) -> HealthStatus:
         """
         Comprehensive health check that verifies DNS resolution and network connectivity.
-        Returns HealthStatus object containing detailed check results.
         
-        Args:
-            timeout: Maximum time in seconds to wait for health check
+        :param timeout: Maximum time in seconds to wait for health check. Default is None.
+        :return: A HealthStatus object containing detailed check results.
         """
         timeout = timeout or self.timeout
         logger.info(f"Performing health check for service with base_url={self.base_url}")

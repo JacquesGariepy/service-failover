@@ -24,6 +24,12 @@ logger = logging.getLogger(__name__)
 
 class APIService(Service):
     def __init__(self, api_key: str, base_url: str):
+        """
+        Initialize the APIService with the given API key and base URL.
+        
+        :param api_key: The API key for authentication.
+        :param base_url: The base URL of the external API service.
+        """
         super().__init__(base_url)
         self.api_key = api_key
         self.rate_limiter = RateLimiter()
@@ -31,6 +37,15 @@ class APIService(Service):
         logger.info(f"APIService initialized with base_url={base_url}")
 
     async def request(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
+        """
+        Make a request to the external API service.
+        
+        :param endpoint: The API endpoint to request.
+        :param method: The HTTP method to use (GET, POST, PUT, DELETE).
+        :param params: The query parameters for the request.
+        :param data: The data to send in the request body.
+        :return: The response text from the API.
+        """
         logger.debug(f"Requesting {method} {endpoint} with params={params} and data={data}")
         if method not in HTTP_METHODS:
             raise ValueError(f"Unsupported HTTP method: {method}")
@@ -80,6 +95,17 @@ class APIService(Service):
     async def _make_request(self, session: aiohttp.ClientSession, method: str, 
                           url: str, headers: Dict, params: Optional[Dict], 
                           data: Optional[Dict]) -> aiohttp.ClientResponse:
+        """
+        Make an HTTP request using the aiohttp session.
+        
+        :param session: The aiohttp ClientSession to use.
+        :param method: The HTTP method to use.
+        :param url: The full URL to request.
+        :param headers: The headers to include in the request.
+        :param params: The query parameters for the request.
+        :param data: The data to send in the request body.
+        :return: The aiohttp ClientResponse object.
+        """
         logger.debug(f"Making {method} request to {url} with headers={headers} and params={params}")
         if method == 'GET':
             return await session.get(url, headers=headers, params=params)
@@ -93,6 +119,13 @@ class APIService(Service):
             raise ValueError(f"Unsupported HTTP method: {method}")
 
     async def _handle_response(self, response: aiohttp.ClientResponse, endpoint: str) -> str:
+        """
+        Handle the HTTP response from the API request.
+        
+        :param response: The aiohttp ClientResponse object.
+        :param endpoint: The API endpoint that was requested.
+        :return: The response text from the API.
+        """
         logger.debug(f"Handling response for {endpoint} with status {response.status}")
         if response.status == 429:
             retry_after = int(response.headers.get('Retry-After', DEFAULT_RETRY_AFTER))
@@ -110,17 +143,20 @@ class APIService(Service):
             raise
 
     def get_health_history(self) -> List[Dict]:
-        # Function implementation goes here
-        pass
-
-    def get_health_history(self) -> List[Dict]:
-        """Return the health check history in a formatted way"""
+        """
+        Return the health check history in a formatted way.
+        
+        :return: A list of dictionaries representing the health check history.
+        """
         logger.debug("Getting health history")
         return [status.to_dict() for status in self.health_history[-10:]]  # Keep last 10 checks
 
     async def verify_service_health(self, display_results: bool = True) -> bool:
         """
-        Enhanced version that maintains health history and provides detailed logging
+        Verify the health of the service and maintain health history.
+        
+        :param display_results: Whether to display the health check results.
+        :return: True if the service is healthy, False otherwise.
         """
         logger.info(f"Verifying health for service {self.base_url}")
         health_status = await self.health_check()
@@ -165,8 +201,55 @@ class APIService(Service):
         return health_status.overall_status
 
     def __str__(self) -> str:
-        """Enhanced string representation including last health status"""
+        """
+        Return a string representation of the service including the last health status.
+        
+        :return: A string representation of the service.
+        """
         status = self._last_health_status
         if status:
             return f"ExternalAPIService({self.base_url}) - Last Check: {status.timestamp.strftime('%Y-%m-%d %H:%M:%S')} - Status: {'Healthy' if status.overall_status else 'Unhealthy'}"
         return f"ExternalAPIService({self.base_url}) - No health check performed yet"
+
+import logging
+from cachetools import TTLCache
+import configparser
+
+# Load configuration from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+DEFAULT_TTL = config.getint('DEFAULT', 'DEFAULT_TTL', fallback=300)
+
+logger = logging.getLogger(__name__)
+
+class Cache:
+    def __init__(self, ttl=DEFAULT_TTL):
+        """
+        Initialize the Cache with a time-to-live (TTL) value.
+        
+        :param ttl: The time-to-live for cache entries in seconds.
+        """
+        self.cache = TTLCache(maxsize=100, ttl=ttl)
+        logger.info(f"Cache initialized with TTL={ttl}")
+
+    def get(self, key):
+        """
+        Retrieve a value from the cache by key.
+        
+        :param key: The key to look up in the cache.
+        :return: The value associated with the key, or None if the key is not found.
+        """
+        value = self.cache.get(key)
+        logger.debug(f"Cache get: key={key}, value={value}")
+        return value
+
+    def set(self, key, value):
+        """
+        Set a value in the cache with the specified key.
+        
+        :param key: The key to associate with the value.
+        :param value: The value to store in the cache.
+        """
+        self.cache.setdefault(key, value)
+        logger.debug(f"Cache set: key={key}, value={value}")

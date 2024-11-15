@@ -5,22 +5,33 @@ from typing import ClassVar, Dict, Optional, Protocol
 logger = logging.getLogger(__name__)
 
 class MetricsCollector:
+    """
+    A singleton class to collect and record various metrics for external services.
+    """
     _instance: ClassVar[Optional['MetricsCollector']] = None
     _initialized: bool = False
     _metrics: Dict = {}
 
     def __new__(cls) -> 'MetricsCollector':
+        """
+        Singleton pattern to ensure only one instance of MetricsCollector exists.
+        """
         if cls._instance is None:
             cls._instance = super(MetricsCollector, cls).__new__(cls)
         return cls._instance
 
     def __init__(self):
+        """
+        Initialize the MetricsCollector and set up metrics.
+        """
         if not self._initialized:
             self._initialized = True
             self._setup_metrics()
 
     def _setup_metrics(self) -> None:
-        """Initialize all metrics once"""
+        """
+        Initialize all metrics once.
+        """
         try:
             # Request metrics
             self._metrics['request_counter'] = Counter(
@@ -76,14 +87,29 @@ class MetricsCollector:
 
     @property
     def request_counter(self) -> Counter:
+        """
+        Get the request counter metric.
+        
+        :return: The request counter metric.
+        """
         return self._metrics['request_counter']
 
     @property
     def latency_histogram(self) -> Histogram:
+        """
+        Get the latency histogram metric.
+        
+        :return: The latency histogram metric.
+        """
         return self._metrics['latency_histogram']
 
     def record_health_check(self, is_healthy: bool, service_name: str = "unknown") -> None:
-        """Record the result of a health check"""
+        """
+        Record the result of a health check.
+        
+        :param is_healthy: Whether the service is healthy.
+        :param service_name: The name of the service.
+        """
         try:
             status = "healthy" if is_healthy else "unhealthy"
             self._metrics['health_check_counter'].labels(
@@ -98,7 +124,13 @@ class MetricsCollector:
             logger.error(f"Failed to record health check metrics: {str(e)}")
 
     def record_error(self, error_type: str, message: str, service_name: str = "unknown") -> None:
-        """Record an error occurrence"""
+        """
+        Record an error occurrence.
+        
+        :param error_type: The type of error.
+        :param message: The error message.
+        :param service_name: The name of the service.
+        """
         try:
             self._metrics['error_counter'].labels(
                 service=service_name,
@@ -109,7 +141,12 @@ class MetricsCollector:
             logger.error(f"Failed to record error metrics: {str(e)}")
 
     def record_dns_latency(self, duration: float, service_name: str = "unknown") -> None:
-        """Record DNS resolution latency"""
+        """
+        Record DNS resolution latency.
+        
+        :param duration: The DNS resolution time in seconds.
+        :param service_name: The name of the service.
+        """
         try:
             self._metrics['dns_latency'].labels(
                 service=service_name
@@ -119,7 +156,12 @@ class MetricsCollector:
             logger.error(f"Failed to record DNS latency metrics: {str(e)}")
 
     def record_ping_latency(self, duration: float, service_name: str = "unknown") -> None:
-        """Record ping latency"""
+        """
+        Record ping latency.
+        
+        :param duration: The ping latency in seconds.
+        :param service_name: The name of the service.
+        """
         try:
             self._metrics['ping_latency'].labels(
                 service=service_name
@@ -129,7 +171,13 @@ class MetricsCollector:
             logger.error(f"Failed to record ping latency metrics: {str(e)}")
 
     def record_request(self, endpoint: str, status: str, service_name: str = "unknown") -> None:
-        """Record an API request"""
+        """
+        Record an API request.
+        
+        :param endpoint: The API endpoint.
+        :param status: The status of the request.
+        :param service_name: The name of the service.
+        """
         try:
             self._metrics['request_counter'].labels(
                 service=service_name,
