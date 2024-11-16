@@ -1,19 +1,31 @@
 import time
 import logging
 import configparser
-from typing import Dict
-
+import aiohttp
+import asyncio
+import configparser
 from failover.metrics import MetricsCollector
-from .service import Service  # Corrected import
+from typing import Dict, Optional, List
+from datetime import datetime
+from .service import Service, HealthStatus
+from .rate import RateLimiter
+from .metrics import MetricsCollector
+from .connection_pool import ConnectionPool
+from .cache import Cache
 
+# Load configuration from config file
 logger = logging.getLogger(__name__)
 
 # Load configuration from config file
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+# Constants
 DEFAULT_FAILURE_THRESHOLD = config.getint('DEFAULT', 'DEFAULT_FAILURE_THRESHOLD', fallback=3)
 DEFAULT_RECOVERY_TIME = config.getint('DEFAULT', 'DEFAULT_RECOVERY_TIME', fallback=60)
+DEFAULT_TIMEOUT = config.getint('DEFAULT', 'DEFAULT_TIMEOUT', fallback=5)  # seconds
+DEFAULT_RETRY_AFTER = config.getint('DEFAULT', 'DEFAULT_RETRY_AFTER', fallback=60)  # seconds
+HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 
 class CircuitBreaker:
     def __init__(self, failure_threshold: int = DEFAULT_FAILURE_THRESHOLD, recovery_time: int = DEFAULT_RECOVERY_TIME):
@@ -142,30 +154,6 @@ class CircuitBreaker:
         :return: The last failure time as a timestamp.
         """
         return self.last_failure_time.get(service, 0)
-
-import aiohttp
-import asyncio
-import logging
-import configparser
-from typing import Dict, Optional, List
-from datetime import datetime
-from .service import Service, HealthStatus
-from .rate import RateLimiter
-from .metrics import MetricsCollector
-from .connection_pool import ConnectionPool
-from .cache import Cache
-
-# Load configuration from config file
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-# Constants
-DEFAULT_TIMEOUT = config.getint('DEFAULT', 'DEFAULT_TIMEOUT', fallback=5)  # seconds
-DEFAULT_RETRY_AFTER = config.getint('DEFAULT', 'DEFAULT_RETRY_AFTER', fallback=60)  # seconds
-HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
-
-# Configure logging
-logger = logging.getLogger(__name__)
 
 class APIService(Service):
     def __init__(self, api_key: str, base_url: str):
