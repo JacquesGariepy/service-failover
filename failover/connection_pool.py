@@ -1,11 +1,6 @@
 import asyncio
 import logging
 import configparser
-from typing import Dict
-
-from failover.circuit_breaker import CircuitBreaker
-from failover.policies import RetryPolicy
-from failover.service import Service
 
 # Load configuration from config file
 config = configparser.ConfigParser()
@@ -54,34 +49,3 @@ class ConnectionPool:
         Exit the runtime context related to this object.
         """
         await self.release()
-
-class FailoverManager:
-    def __init__(self, retry_policy: RetryPolicy, circuit_breaker: CircuitBreaker):
-        """
-        Initialize the FailoverManager with a retry policy and a circuit breaker.
-        
-        :param retry_policy: The policy to use for retrying failed requests.
-        :param circuit_breaker: The circuit breaker to manage service failures.
-        """
-        # ...existing code...
-
-    def register_service(self, service: Service):
-        """
-        Register a service with the failover manager.
-        
-        :param service: The service to register.
-        """
-        # ...existing code...
-
-    async def execute(self, endpoint: str, method: str = 'GET', params: Dict = None, data: Dict = None) -> str:
-        """
-        Execute a request to the registered services with failover and retry logic.
-        
-        :param endpoint: The API endpoint to request.
-        :param method: The HTTP method to use (GET, POST, PUT, DELETE). Default is 'GET'.
-        :param params: The query parameters for the request. Default is None.
-        :param data: The data to send in the request body. Default is None.
-        :return: The response text from the service.
-        :raises Exception: If all services fail.
-        """
-        # ...existing code...

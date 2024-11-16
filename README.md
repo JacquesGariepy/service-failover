@@ -39,13 +39,13 @@ Follow these steps to install the package:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/JacquesGariepy/service_failover.git
+   git clone https://github.com/JacquesGariepy/service-failover.git
    ```
 
 2. **Navigate to the project directory:**
 
    ```bash
-   cd service_failover
+   cd service-failover
    ```
 
 3. **Create a virtual environment (recommended):**
@@ -150,7 +150,7 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for m
 
 **Jacques Gariépy** - [jacques.gariepy@outlook.com](mailto:jacques.gariepy@outlook.com)
 
-Project Link: [https://github.com/JacquesGariepy/service_failover](https://github.com/JacquesGariepy/service_failover)
+Project Link: [https://github.com/JacquesGariepy/service-failover](https://github.com/JacquesGariepy/service-failover)
 
 ## FAQ
 
