@@ -1,31 +1,19 @@
 import time
 import logging
 import configparser
-import aiohttp
-import asyncio
-import configparser
-from failover.metrics import MetricsCollector
-from typing import Dict, Optional, List
-from datetime import datetime
-from .service import Service, HealthStatus
-from .rate import RateLimiter
-from .metrics import MetricsCollector
-from .connection_pool import ConnectionPool
-from .cache import Cache
+from typing import Dict
 
-# Load configuration from config file
+from failover.metrics import MetricsCollector
+from .service import Service  # Corrected import
+
 logger = logging.getLogger(__name__)
 
 # Load configuration from config file
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-# Constants
 DEFAULT_FAILURE_THRESHOLD = config.getint('DEFAULT', 'DEFAULT_FAILURE_THRESHOLD', fallback=3)
 DEFAULT_RECOVERY_TIME = config.getint('DEFAULT', 'DEFAULT_RECOVERY_TIME', fallback=60)
-DEFAULT_TIMEOUT = config.getint('DEFAULT', 'DEFAULT_TIMEOUT', fallback=5)  # seconds
-DEFAULT_RETRY_AFTER = config.getint('DEFAULT', 'DEFAULT_RETRY_AFTER', fallback=60)  # seconds
-HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 
 class CircuitBreaker:
     def __init__(self, failure_threshold: int = DEFAULT_FAILURE_THRESHOLD, recovery_time: int = DEFAULT_RECOVERY_TIME):
@@ -154,56 +142,3 @@ class CircuitBreaker:
         :return: The last failure time as a timestamp.
         """
         return self.last_failure_time.get(service, 0)
-
-class APIService(Service):
-    def __init__(self, api_key: str, base_url: str):
-        """
-        Initialize the APIService with the given API key and base URL.
-        
-        :param api_key: The API key for authentication.
-        :param base_url: The base URL of the external API service.
-        """
-        # ...existing code...
-
-    async def _make_request(self, session: aiohttp.ClientSession, method: str, 
-                          url: str, headers: Dict, params: Optional[Dict], 
-                          data: Optional[Dict]) -> aiohttp.ClientResponse:
-        """
-        Make an HTTP request to the external API service.
-        
-        :param session: The aiohttp ClientSession object.
-        :param method: The HTTP method to use.
-        :param url: The URL to request.
-        :param headers: The headers to include in the request.
-        :param params: The query parameters for the request.
-        :param data: The data to send in the request body.
-        :return: The aiohttp ClientResponse object.
-        """
-        # ...existing code...
-
-    async def _handle_response(self, response: aiohttp.ClientResponse, endpoint: str) -> str:
-        """
-        Handle the HTTP response from the API request.
-        
-        :param response: The aiohttp ClientResponse object.
-        :param endpoint: The API endpoint that was requested.
-        :return: The response text from the API.
-        """
-        # ...existing code...
-
-    def get_health_history(self) -> List[Dict]:
-        """
-        Return the health check history in a formatted way.
-        
-        :return: A list of dictionaries representing the health check history.
-        """
-        # ...existing code...
-
-    async def verify_service_health(self, display_results: bool = True) -> bool:
-        """
-        Verify the health of the service and maintain health history.
-        
-        :param display_results: Whether to display the health check results.
-        :return: True if the service is healthy, False otherwise.
-        """
-        # ...existing code...
