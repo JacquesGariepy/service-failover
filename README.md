@@ -150,8 +150,6 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for m
 
 **Jacques Gariépy** - [https://www.linkedin.com/in/jacquesgariepy/](https://www.linkedin.com/in/jacquesgariepy/)
 
-[jacques.gariepy@outlook.com](mailto:jacques.gariepy@outlook.com)
-
 Project Link: [https://github.com/JacquesGariepy/service_failover](https://github.com/JacquesGariepy/service_failover)
 
 ## FAQ
