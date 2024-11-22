@@ -146,16 +146,6 @@ Contributions are welcome! To contribute:
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for more information.
 
-## Contact
-
-**Jacques Gariépy** - [https://www.linkedin.com/in/jacquesgariepy/](https://www.linkedin.com/in/jacquesgariepy/)
-
-Project Link: [https://github.com/JacquesGariepy/service-failover](https://github.com/JacquesGariepy/service-failover)
-
-## Reddit Discussion
-
-For more insights and discussions about the Service Failover System, check out our [Reddit post](https://www.reddit.com/r/Python/s/b1w6LDX1n8).
-
 ## FAQ
 
 **Q: How do I handle service-specific errors?**
