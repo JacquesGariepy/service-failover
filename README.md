@@ -170,3 +170,8 @@ A: Use the built-in metrics collector to gather health metrics and integrate wit
 ## Conclusion
 
 By integrating the Service Failover System, your application gains robustness against service failures, maintaining availability through effective failover mechanisms.
+
+[![Reddit Badge](https://img.shields.io/badge/Discussion-reddit-red)](https://www.reddit.com/r/Python/comments/1gx69ce/light_resilience_with_the_service_failover_system/)
+
+Let’s stay in touch here or on LinkedIn.
+[![LinkedIn Badge](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/jacquesgariepy)
