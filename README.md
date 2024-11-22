@@ -152,8 +152,9 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for m
 
 Project Link: [https://github.com/JacquesGariepy/service-failover](https://github.com/JacquesGariepy/service-failover)
 
-Reddit:
-[https://www.reddit.com/r/Python/s/b1w6LDX1n8](https://www.reddit.com/r/Python/s/b1w6LDX1n8)
+## Reddit Discussion
+
+For more insights and discussions about the Service Failover System, check out our [Reddit post](https://www.reddit.com/r/Python/s/b1w6LDX1n8).
 
 ## FAQ
 
